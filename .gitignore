@@ -1,0 +1,29 @@
+# Node modules
+node_modules/
+
+# Env file
+.env
+
+# Log files
+logs/
+*.log
+npm-debug.log*
+
+# Optional npm cache directory
+.npm/
+
+# OS-specific
+.DS_Store
+Thumbs.db
+
+# IDEs
+.vscode/
+.idea/
+
+# Build output (nếu có dùng transpiler như TypeScript/Babel)
+dist/
+build/
+
+# Optional: nếu dùng uploads hoặc temp files
+uploads/
+temp/
