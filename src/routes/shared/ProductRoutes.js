@@ -5,4 +5,6 @@ const route = express.Router();
 
 route.get('/products', ProductControllers.getAllProducts );
 
+route.get('/products/:productId', ProductControllers.getProductDetails);
+
 module.exports = route;
