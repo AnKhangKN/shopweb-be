@@ -3,6 +3,8 @@ const cors = require('cors');
 const dotenv = require('dotenv');
 const routes = require('./routes');
 const bodyParser = require('body-parser');
+const path = require("path");  // <-- cần dòng này
+const fs = require("fs");      // <-- nếu có dùng fs
 
 dotenv.config();
 
@@ -17,7 +19,6 @@ app.use(cors({
 app.use(bodyParser.json());
 
 routes(app);
-
 
 
 module.exports = app;
