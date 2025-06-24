@@ -3,22 +3,25 @@ const Product = require("../../models/product");
 const createProduct = (newProduct, files) => {
     return new Promise(async (resolve, reject) => {
         try {
-            // Lấy ra tên file từ files
             const imageFilenames = files.map(file => file.filename);
 
+            // Tạo detail object, chỉ thêm size nếu có
+            const productDetail = {
+                color: newProduct.color?.trim(),
+                price: newProduct.price,
+                quantity: newProduct.quantity,
+            };
+
+            if (newProduct.size) {
+                productDetail.size = newProduct.size?.trim();
+            }
+
             const createdProduct = await Product.create({
-                productName: newProduct.productName,
-                category: newProduct.category,
-                description: newProduct.description,
-                images: imageFilenames, // lưu array tên file
-                details: [
-                    {
-                        color: newProduct.color,
-                        size: newProduct.size,
-                        price: newProduct.price,
-                        quantity: newProduct.quantity,
-                    },
-                ],
+                productName: newProduct.productName?.trim(),
+                category: newProduct.category?.trim(),
+                description: newProduct.description?.trim(),
+                images: imageFilenames,
+                details: [productDetail],
             });
 
             resolve({
@@ -69,10 +72,10 @@ const addProductDetail = (newProductDetail, files) => {
             const isDuplicate = product.details.some(detail => {
                 if (size) {
                     // Sản phẩm có màu và size
-                    return detail.color === color && detail.size === size;
+                    return detail.color?.trim() === color && detail.size?.trim() === size;
                 } else {
                     // Sản phẩm chỉ có màu
-                    return detail.color === color;
+                    return detail.color?.trim() === color;
                 }
             });
 
