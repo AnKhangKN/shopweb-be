@@ -42,7 +42,7 @@ const getProductDetails = (productId) => {
 
         } catch (error) {
             reject(error);
-        }
+        } 
     })
 }
 
