@@ -25,5 +25,4 @@ dist/
 build/
 
 # Optional: nếu dùng uploads hoặc temp files
-uploads/
 temp/
