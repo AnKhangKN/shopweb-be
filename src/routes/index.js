@@ -4,6 +4,8 @@ const UserRoutes = require("./auth/UserRoutes");
 const express = require("express");
 const path = require("path");
 const ImageRoutes = require("./shared/ImageRoutes");
+const CartRoutes = require("./user/CartRoutes")
+const OrderRoutes = require("./user/OrderRoutes");
 
 const routes = (app) => {
   // admin
@@ -21,6 +23,11 @@ const routes = (app) => {
 
   // auth user
   app.use("/api/user", UserRoutes);
+
+  // User routes
+  app.use("/api/user", CartRoutes)
+
+  app.use("/api/user", OrderRoutes);
 };
 
 module.exports = routes;

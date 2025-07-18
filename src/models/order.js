@@ -47,7 +47,7 @@ const orderSchema = new mongoose.Schema(
             min: 0,
         },
 
-        payment_method: {
+        paymentMethod: {
             type: String,
             enum: ["cod", "creditCard"],
             default: "cod",
@@ -61,6 +61,7 @@ const orderSchema = new mongoose.Schema(
 
         paidAt: {
             type: Date,
+            required: false,
         },
 
         status: {
