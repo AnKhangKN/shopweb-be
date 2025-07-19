@@ -67,20 +67,8 @@ const loginUser = (email, password) => {
   });
 };
 
-const getUserById = (userId) => {
-  return new Promise(async (resolve, reject) => {
-    try {
-      const user = await User.findById(userId);
-      if (!user) {
-        throw new Error("Người dùng không tồn tại");
-      }
-      resolve({
-        user: user,
-      });
-    } catch (e) {
-      reject(e);
-    }
-  });
+const getUserById = async (id) => {
+  return await User.findById(id);
 };
 
 module.exports = {
