@@ -1,5 +1,6 @@
 const User = require("../../models/user");
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 
 const registerUser = async (userData) => {
   const { email, password, userName } = userData;
@@ -41,12 +42,40 @@ const loginUser = (email, password) => {
         throw new Error("Mật khẩu không đúng");
       }
 
+      // Tạo payload để đưa vào token
+      const payload = {
+        id: user._id,
+        isAdmin: user.isAdmin || false,
+      };
+
+      // Tạo token
+      const token = jwt.sign(payload, process.env.JWT_SECRET, {
+        expiresIn: "7d", // hoặc "1d", "30m", v.v.
+      });
+
       resolve({
         id: user._id,
         userName: user.userName,
         email: user.email,
         accountStatus: user.accountStatus,
         isAdmin: user.isAdmin,
+        token, // Trả về token ở đây
+      });
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
+const getUserById = (userId) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const user = await User.findById(userId);
+      if (!user) {
+        throw new Error("Người dùng không tồn tại");
+      }
+      resolve({
+        user: user,
       });
     } catch (e) {
       reject(e);
@@ -57,4 +86,5 @@ const loginUser = (email, password) => {
 module.exports = {
   registerUser,
   loginUser,
+  getUserById,
 };
