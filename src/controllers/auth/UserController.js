@@ -20,6 +20,7 @@ const register = async (req, res) => {
 const login = async (req, res) => {
   try {
     const { email, password } = req.body;
+
     if (!email || !password) {
       return res.status(400).json({
         status: "ERROR",
@@ -27,23 +28,13 @@ const login = async (req, res) => {
       });
     }
 
-    const user = await userService.loginUser(email, password); // Trả về user nếu đúng
-
-    // Tạo token
-    const accessToken = jwt.sign(
-      {
-        _id: user._id,
-        email: user.email,
-        isAdmin: user.isAdmin || false,
-      },
-      process.env.JWT_SECRET,
-      { expiresIn: "24h" }
-    );
+    const result = await userService.loginUser(email, password);
 
     return res.status(200).json({
       status: "OK",
       message: "Đăng nhập thành công",
-      token: accessToken, // đã chứa token ở đây
+      token: result.token,
+      data: result.user, // => frontend có thể lưu tên, email, id...
     });
   } catch (e) {
     return res.status(400).json({
@@ -56,6 +47,7 @@ const login = async (req, res) => {
 const getUserInfo = async (req, res) => {
   try {
     const userId = req.userId; // authMiddleware đã giải mã và gắn vào req
+    console.log("userId", userId);
     const user = await userService.getUserById(userId);
 
     if (!user) {

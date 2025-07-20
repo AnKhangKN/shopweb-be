@@ -27,44 +27,38 @@ const registerUser = async (userData) => {
   };
 };
 
-const loginUser = (email, password) => {
-  return new Promise(async (resolve, reject) => {
-    try {
-      const user = await User.findOne({ email });
+const loginUser = async (email, password) => {
+  const user = await User.findOne({ email });
 
-      if (!user) {
-        throw new Error("Tài khoản không tồn tại");
-      }
+  if (!user) {
+    throw new Error("Tài khoản không tồn tại");
+  }
 
-      const isMatch = await bcrypt.compare(password, user.password);
+  const isMatch = await bcrypt.compare(password, user.password);
 
-      if (!isMatch) {
-        throw new Error("Mật khẩu không đúng");
-      }
+  if (!isMatch) {
+    throw new Error("Mật khẩu không đúng");
+  }
 
-      // Tạo payload để đưa vào token
-      const payload = {
-        id: user._id,
-        isAdmin: user.isAdmin || false,
-      };
+  const payload = {
+    id: user._id, // quan trọng: key phải là `id` để middleware dùng
+    isAdmin: user.isAdmin || false,
+  };
 
-      // Tạo token
-      const token = jwt.sign(payload, process.env.JWT_SECRET, {
-        expiresIn: "7d", // hoặc "1d", "30m", v.v.
-      });
-
-      resolve({
-        id: user._id,
-        userName: user.userName,
-        email: user.email,
-        accountStatus: user.accountStatus,
-        isAdmin: user.isAdmin,
-        token, // Trả về token ở đây
-      });
-    } catch (e) {
-      reject(e);
-    }
+  const token = jwt.sign(payload, process.env.JWT_SECRET, {
+    expiresIn: "7d",
   });
+
+  return {
+    user: {
+      id: user._id,
+      userName: user.userName,
+      email: user.email,
+      accountStatus: user.accountStatus,
+      isAdmin: user.isAdmin,
+    },
+    token,
+  };
 };
 
 const getUserById = async (id) => {
