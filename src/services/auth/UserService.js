@@ -68,7 +68,25 @@ const loginUser = (email, password) => {
 };
 
 const getUserById = async (id) => {
-  return await User.findById(id);
+  return new Promise(async (resolve, reject) => {
+    try {
+    const user= User.findById(id)
+      if (!user) {
+        return reject(
+            {
+              message: "Người dùng không tồn tại"
+
+            }
+        )
+      }
+      resolve({
+        massage: "Lấy thông tin người dùng",
+        user: user,
+      });
+    } catch (e) {
+      reject(e);
+    }
+  })
 };
 
 module.exports = {
