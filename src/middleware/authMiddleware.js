@@ -11,10 +11,16 @@ const authMiddleware = (req, res, next) => {
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.userId = decoded._id || decoded.id;
+
+    // ✅ Dùng đúng key đã tạo: `id`
+    req.userId = decoded.id;
+    req.isAdmin = decoded.isAdmin;
+
     next();
   } catch (err) {
-    return res.status(403).json({ message: "Token không hợp lệ" });
+    return res
+      .status(403)
+      .json({ message: "Token không hợp lệ", error: err.message });
   }
 };
 
