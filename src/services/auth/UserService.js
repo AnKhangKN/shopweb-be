@@ -1,6 +1,8 @@
 const User = require("../../models/user");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const Otp = require("../../models/otp");
+const { sendMail } = require("../../utils/mailer");
 
 const registerUser = async (userData) => {
   const { email, password, userName } = userData;
@@ -65,8 +67,72 @@ const getUserById = async (id) => {
   return await User.findById(id);
 };
 
+const sendOtpToEmail = async (email) => {
+  const user = await User.findOne({ email });
+  if (!user) {
+    throw new Error("Email không tồn tại");
+  }
+
+  // Tạo mã OTP
+  const otpCode = Math.floor(100000 + Math.random() * 900000).toString();
+  const expiresAt = new Date(Date.now() + 5 * 60 * 1000); // 5 phút hết hạn
+
+  // Xóa OTP cũ (nếu có)
+  await Otp.deleteMany({ email });
+
+  // Lưu OTP mới vào DB
+  await Otp.create({
+    email,
+    code: otpCode,
+    expiresAt,
+  });
+
+  // Soạn nội dung email
+  const subject = "Mã xác thực OTP từ ShopApp";
+  const message = `Mã OTP của bạn là: ${otpCode}. Vui lòng không chia sẻ mã này với bất kỳ ai. Mã có hiệu lực trong 5 phút.`;
+
+  try {
+    await sendMail(email, subject, message);
+    console.log(`Đã gửi OTP tới ${email}`);
+  } catch (error) {
+    console.error("❌ Gửi email thất bại:", error.message);
+    throw new Error("Không thể gửi email. Vui lòng thử lại sau.");
+  }
+  return true;
+};
+
+const verifyOtp = async (email, otpCode) => {
+  const otpEntry = await Otp.findOne({ email, code: otpCode });
+
+  if (!otpEntry) {
+    throw new Error("OTP không đúng");
+  }
+
+  if (otpEntry.expiresAt < new Date()) {
+    await Otp.deleteOne({ _id: otpEntry._id });
+    throw new Error("OTP đã hết hạn");
+  }
+
+  // Xác minh thành công => Xóa OTP (dùng 1 lần)
+  await Otp.deleteOne({ _id: otpEntry._id });
+};
+
+const resetPassword = async (email, newPassword) => {
+  const user = await User.findOne({ email });
+  if (!user) {
+    throw new Error("Email không tồn tại");
+  }
+
+  const hashed = await bcrypt.hash(newPassword, 10);
+  user.password = hashed;
+  await user.save();
+};
+
 module.exports = {
   registerUser,
   loginUser,
   getUserById,
+  sendOtpToEmail,
+  verifyOtp,
+  resetPassword,
 };

@@ -1,5 +1,4 @@
 const userService = require("../../services/auth/UserService");
-const jwt = require("jsonwebtoken");
 
 const register = async (req, res) => {
   try {
@@ -67,8 +66,71 @@ const getUserInfo = async (req, res) => {
   }
 };
 
+const forgotPassword = async (req, res) => {
+  const { email } = req.body;
+
+  // Kiểm tra email có được gửi không
+  if (!email) {
+    return res.status(400).json({
+      status: "ERROR",
+      message: "Vui lòng cung cấp email.",
+    });
+  }
+
+  try {
+    const result = await userService.sendOtpToEmail(email);
+    res.status(200).json({
+      status: "OK",
+      message: "OTP đã được gửi đến email.",
+    });
+  } catch (e) {
+    res.status(400).json({
+      status: "ERROR",
+      message: e.message || "Đã xảy ra lỗi khi gửi OTP.",
+    });
+  }
+};
+
+const verifyOtp = async (req, res) => {
+  const { email, otp } = req.body;
+
+  try {
+    await userService.verifyOtp(email, otp);
+    res.status(200).json({
+      status: "OK",
+      message: "OTP chính xác",
+    });
+  } catch (e) {
+    res.status(400).json({
+      status: "ERROR",
+      message: e.message,
+    });
+  }
+};
+
+const resetPassword = async (req, res) => {
+  const { email, newPassword } = req.body;
+  console.log("reset password", req.body);
+
+  try {
+    await userService.resetPassword(email, newPassword);
+    res.status(200).json({
+      status: "OK",
+      message: "Đổi mật khẩu thành công",
+    });
+  } catch (e) {
+    res.status(400).json({
+      status: "ERROR",
+      message: e.message,
+    });
+  }
+};
+
 module.exports = {
   register,
   login,
   getUserInfo,
+  forgotPassword,
+  verifyOtp,
+  resetPassword,
 };
