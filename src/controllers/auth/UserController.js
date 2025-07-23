@@ -45,7 +45,7 @@ const login = async (req, res) => {
 
 const getUserInfo = async (req, res) => {
   try {
-    const userId = req.userId; // authMiddleware đã giải mã và gắn vào req
+    const userId = req.userId; // authMiddleware đã giải mã và gắn vào req 
     console.log("userId", userId);
     const user = await userService.getUserById(userId);
 
