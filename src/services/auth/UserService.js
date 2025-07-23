@@ -66,14 +66,11 @@ const loginUser = async (email, password) => {
 const getUserById = async (id) => {
   return new Promise(async (resolve, reject) => {
     try {
-    const user= User.findById(id)
+      const user = await User.findById(id);
       if (!user) {
-        return reject(
-            {
-              message: "Người dùng không tồn tại"
-
-            }
-        )
+        return reject({
+          message: "Người dùng không tồn tại",
+        });
       }
       resolve({
         massage: "Lấy thông tin người dùng",
@@ -82,7 +79,7 @@ const getUserById = async (id) => {
     } catch (e) {
       reject(e);
     }
-  })
+  });
 };
 
 const sendOtpToEmail = async (email) => {

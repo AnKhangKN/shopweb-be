@@ -45,21 +45,17 @@ const login = async (req, res) => {
 
 const getUserInfo = async (req, res) => {
   try {
-    const userId = req.userId; // authMiddleware đã giải mã và gắn vào req 
-    console.log("userId", userId);
+    const userId = req.userId;
     const user = await userService.getUserById(userId);
 
     if (!user) {
       return res.status(404).json({ message: "Người dùng không tồn tại" });
     }
 
-    // Ẩn thông tin nhạy cảm (password...)
-    const { password, ...safeUser } = user.toObject();
-
     res.status(200).json({
       status: "OK",
       message: "Lấy thông tin người dùng thành công",
-      data: safeUser,
+      data: user,
     });
   } catch (err) {
     res.status(500).json({ message: "Lỗi server", error: err.message });
