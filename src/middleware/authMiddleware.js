@@ -12,7 +12,6 @@ const authMiddleware = (req, res, next) => {
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-    // ✅ Dùng đúng key đã tạo: `id`
     req.userId = decoded.id;
     req.isAdmin = decoded.isAdmin;
 

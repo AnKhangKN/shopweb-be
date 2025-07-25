@@ -14,13 +14,13 @@ const userSchema = new mongoose.Schema(
 
         shippingAddress: [
             {
-                phone: {type: String,required: false,},
+                phone: {type: String, required: false,},
                 address: {type: String, required: false},
                 city: {type: String, required: false},
             }
         ], // Địa chỉ lưu mảng địa chỉ để có thể sử dụng khi giao hàng
 
-        image: { type: String,required: false },
+        image: {type: String, required: false},
 
         accountStatus: {
             type: String,
@@ -39,13 +39,13 @@ const userSchema = new mongoose.Schema(
 
         wishlist: [
             {
-                productId: { type: mongoose.Schema.Types.ObjectId, ref: "Product" },
-                ProductName: { type: String,required: false },
-                ProductImg: { type: String, required: false },
+                productId: {type: mongoose.Schema.Types.ObjectId, ref: "Product"},
+                ProductName: {type: String, required: false},
+                ProductImg: {type: String, required: false},
             },
         ],
 
-        following: { type: Number,min: 0, default: 0, required: false },
+        following: {type: Number, min: 0, default: 0, required: false},
 
     },
     {

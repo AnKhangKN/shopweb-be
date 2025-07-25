@@ -1,5 +1,7 @@
 const Order = require("../../models/order");
 const Product = require("../../models/product")
+const User = require("../../models/user");
+const Cart = require("../../models/cart");
 
 const createOrder = ({
                          userId,
@@ -12,7 +14,7 @@ const createOrder = ({
                      }) => {
     return new Promise(async (resolve, reject) => {
         try {
-            // Xử lý cập nhật số lượng tồn kho từng sản phẩm
+            // 1. Cập nhật tồn kho
             for (const item of items) {
                 const { productId, quantity } = item;
                 const product = await Product.findById(productId);
@@ -32,7 +34,7 @@ const createOrder = ({
                 await product.save();
             }
 
-            // Tạo đơn hàng
+            // 2. Tạo đơn hàng
             const order = await Order.create({
                 userId,
                 shippingAddress,
@@ -41,9 +43,25 @@ const createOrder = ({
                 totalPrice,
                 shippingPrice,
                 paymentMethod,
-                isPaid: paymentMethod === "creditCard",
-                paidAt: paymentMethod === "creditCard" ? new Date() : null,
+                isPaid: paymentMethod === "bankTransfer",
+                paidAt: paymentMethod === "bankTransfer" ? new Date() : null,
             });
+
+            // 3. Xóa các item đã mua khỏi cart
+            await Cart.updateOne(
+                { userId },
+                {
+                    $pull: {
+                        items: {
+                            $or: items.map(item => ({
+                                productId: item.productId,
+                                size: item.size,
+                                color: item.color
+                            }))
+                        }
+                    }
+                }
+            );
 
             resolve({
                 message: "Thanh toán thành công!",
@@ -55,6 +73,50 @@ const createOrder = ({
     });
 };
 
+const getShippingAddress = async ({ userId }) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const user = await User.findById(userId);
+
+            resolve({
+                message: "lấy thông tin thành công",
+                shippingAddress: user.shippingAddress,
+            });
+        } catch (error) {
+            reject(error);
+        }
+    });
+};
+
+const addShippingAddress = async ({ userId, phone, address, city }) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const updatedUser = await User.findByIdAndUpdate(
+                userId,
+                {
+                    $push: {
+                        shippingAddress: {
+                            phone,
+                            address,
+                            city,
+                        },
+                    },
+                },
+                { new: true } // trả về user đã cập nhật
+            );
+
+            resolve({
+                message: "Thêm địa chỉ thành công!",
+                shippingAddress: updatedUser.shippingAddress,
+            });
+        } catch (error) {
+            reject(error);
+        }
+    });
+};
+
 module.exports = {
     createOrder,
+    getShippingAddress,
+    addShippingAddress
 };
