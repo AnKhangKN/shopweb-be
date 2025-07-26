@@ -9,6 +9,6 @@ routes.get("/carts",authMiddleware,  CartControllers.getCarts);
 
 routes.put("/carts/updateQuantity", authMiddleware, CartControllers.updateQuantity);
 
-routes.delete("/carts", authMiddleware, CartControllers.deleteCartItem);
+routes.delete("/carts/deleteItems", authMiddleware, CartControllers.deleteCartItem);
 
 module.exports = routes;

@@ -72,7 +72,6 @@ const updateQuantity = async (req, res) => {
 
 const deleteCartItem = async (req, res) => {
     try {
-
         const user_id = req.userId;
 
         const {

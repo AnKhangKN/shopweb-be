@@ -40,8 +40,8 @@ const userSchema = new mongoose.Schema(
         wishlist: [
             {
                 productId: {type: mongoose.Schema.Types.ObjectId, ref: "Product"},
-                ProductName: {type: String, required: false},
-                ProductImg: {type: String, required: false},
+                productName: {type: String, required: false},
+                productImg: {type: String, required: false},
             },
         ],
 

@@ -9,4 +9,6 @@ routes.get("/shippingAddress", authMiddleware, OrderControllers.getShippingAddre
 
 routes.post("/shippingAddress", authMiddleware, OrderControllers.addShippingAddress);
 
+routes.delete("/shippingAddress", authMiddleware, OrderControllers.deleteShippingAddress);
+
 module.exports = routes;

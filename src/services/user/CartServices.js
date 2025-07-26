@@ -1,14 +1,31 @@
 const Cart = require('../../models/cart');
+const Product = require('../../models/product');
 
 const createCart = ({ userId, productId, productName, productImage, size, color, price, quantity }) => {
     return new Promise(async (resolve, reject) => {
         try {
-            const cart = await Cart.findOne({ userId: userId });
+            const product = await Product.findById(productId);
+            if (!product) return reject("Sản phẩm không tồn tại");
+
+            // Tìm biến thể (variant) đúng theo size + color
+            const variant = product.details.find(
+                (d) => d.color === color && d.size === size
+            );
+
+            if (!variant) {
+                return reject("Không tìm thấy biến thể sản phẩm (màu/sz) phù hợp");
+            }
+
+            if (quantity > variant.quantity) {
+                return reject("Số lượng vượt quá tồn kho hiện có cho biến thể này");
+            }
+
+            const cart = await Cart.findOne({ userId });
 
             // Nếu chưa có giỏ hàng => tạo mới
             if (!cart) {
                 const newCart = await Cart.create({
-                    userId: userId,
+                    userId,
                     items: [{
                         productId,
                         productName,
@@ -34,10 +51,14 @@ const createCart = ({ userId, productId, productName, productImage, size, color,
             );
 
             if (existingItemIndex !== -1) {
-                // Cộng dồn số lượng nếu đã có
+                const currentQty = cart.items[existingItemIndex].quantity;
+
+                if (currentQty + quantity > variant.quantity) {
+                    return reject("Không thể thêm, vượt quá số lượng tồn kho cho biến thể này");
+                }
+
                 cart.items[existingItemIndex].quantity += quantity;
             } else {
-                // Thêm mới nếu chưa có
                 cart.items.push({
                     productId,
                     productName,
@@ -82,14 +103,25 @@ const updateQuantity = ({ user_id, productId, color, size, quantity }) => {
     return new Promise(async (resolve, reject) => {
         try {
             const cart = await Cart.findOne({ userId: user_id });
+            if (!cart) return reject("Cart not found");
 
-            if (!cart) {
-                return reject("Cart not found");
+            // 1. Tìm sản phẩm trong Product
+            const product = await Product.findById(productId);
+            if (!product) return reject("Product not found");
+
+            // 2. Tìm variant tương ứng (color + size)
+            const variant = product.details.find(
+                (d) => d.color === color && d.size === size
+            );
+            if (!variant) return reject("Product variant not found");
+
+            // 3. Kiểm tra tồn kho
+            if (quantity > variant.quantity) {
+                return reject(`Số lượng vượt quá tồn kho (${variant.quantity})`);
             }
 
+            // 4. Tìm item trong giỏ và cập nhật
             let itemUpdated = false;
-
-            // Duyệt từng item để tìm item phù hợp (theo productId + color + size)
             for (let item of cart.items) {
                 if (
                     item.productId.toString() === productId.toString() &&
@@ -102,9 +134,7 @@ const updateQuantity = ({ user_id, productId, color, size, quantity }) => {
                 }
             }
 
-            if (!itemUpdated) {
-                return reject("Item not found in cart");
-            }
+            if (!itemUpdated) return reject("Item not found in cart");
 
             await cart.save();
 
@@ -114,7 +144,7 @@ const updateQuantity = ({ user_id, productId, color, size, quantity }) => {
             });
 
         } catch (error) {
-            reject(error);
+            reject(error.message || "Internal error");
         }
     });
 };

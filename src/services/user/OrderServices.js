@@ -115,8 +115,34 @@ const addShippingAddress = async ({ userId, phone, address, city }) => {
     });
 };
 
+const deleteShippingAddress = async ({ userId, phone, address, city }) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const updatedUser = await User.findByIdAndUpdate(
+                userId,
+                {
+                    $pull: {
+                        shippingAddress: {
+                            phone,
+                            address,
+                            city,
+                        },
+                    },
+                },
+                { new: true }
+            );
+
+            resolve(updatedUser);
+        } catch (error) {
+            reject(error);
+        }
+    });
+};
+
+
 module.exports = {
     createOrder,
     getShippingAddress,
-    addShippingAddress
+    addShippingAddress,
+    deleteShippingAddress
 };
