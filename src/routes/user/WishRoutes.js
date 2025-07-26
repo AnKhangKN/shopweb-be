@@ -7,4 +7,6 @@ routes.post("/wishes", authMiddleware, WishControllers.addWishList);
 
 routes.delete("/wishes", authMiddleware, WishControllers.deleteWishItem);
 
+routes.get("/wishes", authMiddleware, WishControllers.getAllWishList);
+
 module.exports = routes;
