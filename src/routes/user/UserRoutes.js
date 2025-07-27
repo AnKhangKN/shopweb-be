@@ -11,4 +11,6 @@ routes.put("/updateUserName", authMiddleware, UserControllers.updateUserName);
 
 routes.post("/uploadAvatar", authMiddleware, uploadAvatar, UserControllers.uploadAvatar);
 
+routes.get("/users",authMiddleware, UserControllers.getDetail)
+
 module.exports = routes;

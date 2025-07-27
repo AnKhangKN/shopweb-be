@@ -62,8 +62,23 @@ const uploadAvatar = ({ userId, file }) => {
     });
 };
 
+const getDetails = (userId) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const user = await User.findById(userId)
+            resolve({
+                message: "Get Users Successfully",
+                user
+            })
+        } catch (error) {
+            reject(error);
+        }
+    })
+}
+
 module.exports = {
     getAllOrderHistory,
     updateUserName,
-    uploadAvatar
+    uploadAvatar,
+    getDetails
 }

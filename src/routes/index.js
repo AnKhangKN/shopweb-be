@@ -14,11 +14,11 @@ const routes = (app) => {
   app.use("/api/admin", ProductRoutesAdmin);
 
   // images
-  app.use(
-    "/uploads/productImage",
-    express.static(path.join(__dirname, "uploads"))
-  );
-  app.use("/api/productImage", ImageRoutes);
+  // app.use(
+  //   "/uploads/productImage",
+  //   express.static(path.join(__dirname, "uploads"))
+  // );
+  app.use("/api/image", ImageRoutes);
 
   // Shared
   app.use("/api/shared", ProductRoutesShared);

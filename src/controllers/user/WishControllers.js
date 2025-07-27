@@ -51,21 +51,8 @@ const getAllWishList = async (req, res) => {
     }
 }
 
-// const checkWishItem = async (req, res) => {
-//     try {
-//         const userId = req.userId;
-//         const { productId } = req.body;
-//
-//     } catch (error) {
-//         return res.status(400).json({
-//             error: error.message || "Internal Server Error"
-//         })
-//     }
-// }
-
 module.exports = {
     addWishList,
     deleteWishItem,
     getAllWishList,
-    // checkWishItem
 };

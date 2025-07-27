@@ -32,6 +32,6 @@ const uploadAvatar = multer({
             cb(new Error("Chỉ cho phép ảnh .jpeg, .jpg, .png"));
         }
     },
-}).array("avatarImage", 1); // Chỉ cho phép 1 ảnh
+}).single("avatarImage"); // Chỉ cho phép 1 ảnh
 
 module.exports = uploadAvatar;

@@ -49,6 +49,25 @@ const updateUserName = async (req, res) => {
     }
 };
 
+const getDetail = async (req, res) => {
+    try {
+        const userId = req.userId;
+        if (!userId) {
+            return res.status(400).json({
+                message: 'User not found',
+            })
+
+        }
+        const result = await UserServices.getDetails(userId);
+        return res.status(200).json(result);
+    }
+    catch (error) {
+        return res.status(400).json({
+            message: error.message || "Internal Server Error"
+        })
+    }
+}
+
 const uploadAvatar = async (req, res) => {
     try {
         const userId = req.userId;
@@ -72,5 +91,6 @@ const uploadAvatar = async (req, res) => {
 module.exports = {
     getAllOrderHistory,
     updateUserName,
-    uploadAvatar
+    uploadAvatar,
+    getDetail
 }

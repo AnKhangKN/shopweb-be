@@ -81,32 +81,8 @@ const getAllWishList = (userId) => {
     });
 };
 
-// const checkWishList = (userId) => {
-//     return new Promise(async (resolve, reject) => {
-//         try {
-//             if (!userId) {
-//                 return reject({ message: "User ID is required." });
-//             }
-//
-//             const user = await User.findById(userId).select("wishlist");
-//
-//             if (!user) {
-//                 return reject({ message: "User not found." });
-//             }
-//
-//             resolve({
-//                 message: "Lấy danh sách yêu thích thành công!",
-//                 wishlist: user.wishlist,
-//             });
-//         } catch (error) {
-//             reject({ message: "Lỗi server khi lấy danh sách yêu thích.", error });
-//         }
-//     });
-// }
-
 module.exports = {
     addWishList,
     deleteWishItem,
     getAllWishList,
-    // checkWishList
 }
