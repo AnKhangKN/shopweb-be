@@ -8,6 +8,7 @@ const CartRoutesUser = require("./user/CartRoutes")
 const OrderRoutesUser = require("./user/OrderRoutes");
 const UserRoutesUser = require("./user/UserRoutes");
 const WishRoutesUser = require("./user/WishRoutes");
+const AuthRoutesUser = require('./user/AuthRoutes')
 
 const routes = (app) => {
   // admin
@@ -33,7 +34,9 @@ const routes = (app) => {
 
   app.use("/api/user", UserRoutesUser);
 
-  app.use("/api/user", WishRoutesUser)
+  app.use("/api/user", WishRoutesUser);
+
+  app.use("/api/user", AuthRoutesUser);
 };
 
 module.exports = routes;

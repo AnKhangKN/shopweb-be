@@ -4,7 +4,7 @@ const User = require("../../models/user");
 const getAllOrderHistory = ({userId}) => {
     return new Promise(async (resolve, reject) => {
         try {
-            const orderHistory = await Order.findOne({userId: userId})
+            const orderHistory = await Order.find({userId: userId})
 
             resolve({
                 message: "Order History",
