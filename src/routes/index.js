@@ -9,16 +9,14 @@ const OrderRoutesUser = require("./user/OrderRoutes");
 const UserRoutesUser = require("./user/UserRoutes");
 const WishRoutesUser = require("./user/WishRoutes");
 const AuthRoutesUser = require('./user/AuthRoutes')
+const OrderRoutesAdmin = require("./admin/OrderRoutes");
 
 const routes = (app) => {
   // admin
   app.use("/api/admin", ProductRoutesAdmin);
+  app.use("/api/admin", OrderRoutesAdmin);
 
   // images
-  // app.use(
-  //   "/uploads/productImage",
-  //   express.static(path.join(__dirname, "uploads"))
-  // );
   app.use("/api/image", ImageRoutes);
 
   // Shared
