@@ -74,9 +74,30 @@ const deleteShippingAddress = async (req, res) => {
     }
 }
 
+const updateOrderStatus = async (req, res) => {
+    try {
+        const userId = req.userId;
+        if (!userId) {
+            return res.status(400).json({
+                error: "User ID is required"
+            })
+        }
+
+        const {orderId ,status} = req.body;
+
+        const result = await OrderServices.updateOrderStatus({orderId, status});
+        return res.status(200).json(result);
+    } catch (e) {
+        return res.status(400).json({
+            error: e
+        })
+    }
+}
+
 module.exports = {
     createOrder,
     getShippingAddress,
     addShippingAddress,
-    deleteShippingAddress
+    deleteShippingAddress,
+    updateOrderStatus
 }

@@ -87,7 +87,6 @@ const uploadAvatar = async (req, res) => {
     }
 };
 
-
 module.exports = {
     getAllOrderHistory,
     updateUserName,

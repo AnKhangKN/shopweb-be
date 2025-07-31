@@ -12,18 +12,6 @@ const getOrders = async (req, res) => {
     }
 }
 
-const getOrderDetail = async (req, res) => {
-    try {
-        const orderId = req.params.id;
-        const result = await OrderServices.getOrderDetail({orderId});
-        res.status(200).json(result);
-    } catch (error) {
-        return res.status(404).json({
-            message: error.message || "Internal Server Error",
-        })
-    }
-}
-
 const updateStatusOrder = async(req, res) => {
     try {
 
@@ -41,6 +29,5 @@ const updateStatusOrder = async(req, res) => {
 
 module.exports = {
     getOrders,
-    getOrderDetail,
     updateStatusOrder,
 }

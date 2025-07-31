@@ -11,4 +11,6 @@ routes.post("/shippingAddress", authMiddleware, OrderControllers.addShippingAddr
 
 routes.delete("/shippingAddress", authMiddleware, OrderControllers.deleteShippingAddress);
 
+routes.patch("/orders/status", authMiddleware, OrderControllers.updateOrderStatus);
+
 module.exports = routes;

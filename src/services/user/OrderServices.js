@@ -139,10 +139,39 @@ const deleteShippingAddress = async ({ userId, phone, address, city }) => {
     });
 };
 
+const updateOrderStatus = ({ orderId, status }) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const updateFields = {
+                status,
+            };
+
+            // Nếu trạng thái là "delivered", thêm trường deliveredAt = thời gian hiện tại
+            if (status === "delivered") {
+                updateFields.deliveredAt = new Date();
+            }
+
+            const orderStatus = await Order.findByIdAndUpdate(
+                orderId,
+                updateFields,
+                { new: true }
+            );
+
+            resolve({
+                message: "Cập nhật trạng thái đơn hàng thành công",
+                orderStatus,
+            });
+
+        } catch (e) {
+            reject(e);
+        }
+    });
+};
 
 module.exports = {
     createOrder,
     getShippingAddress,
     addShippingAddress,
-    deleteShippingAddress
+    deleteShippingAddress,
+    updateOrderStatus
 };
